@@ -13,6 +13,10 @@
 # ffmpeg
 #####################################
 
+# Check that ffmpeg is installed 
+hash ffmpeg 2>/dev/null || { echo >&2 "FFMPEG is required. Please install and try again.  Aborting."; exit 1; }
+
+# Include Encoder functions
 . $PWD/lib/audioSync.sh
 
 ###
