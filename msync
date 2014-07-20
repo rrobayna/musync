@@ -1,0 +1,64 @@
+#!/bin/bash
+#####################################
+# convert .flac to .mp3 recursively
+# clean unused files for sync
+# rsync files to a remote filesystem
+# Written By Rafael Robayna
+#
+# @todo add support for converting other formats to mp3
+# @todo add functionality to fix playlists so they are always relative
+# @todo add functionality to check if mp3 tags are set and return a warning
+#
+# Requirements:
+# ffmpeg
+#####################################
+
+# Check that ffmpeg is installed
+hash ffmpeg 2>/dev/null || { echo >&2 "Error: ffmpeg not found, aborting sync..."; exit 1; }
+
+_CONFIG=$HOME/.msync
+
+# Create ~/.msync config if dosen't exist
+if [ ! -f $_CONFIG ]; then
+    touch $_CONFIG
+    ###
+    # Source directory
+    # ex, /path/to/source
+    # @param string
+    ###
+    echo "_SOURCE=" >> $_CONFIG
+    ###
+    # Destination directory
+    # ex, /path/to/dest
+    # @param string
+    ###
+    echo "_DEST=" >> $_CONFIG
+fi
+
+# Includes
+. $_CONFIG
+. $PWD/lib/audioSync.sh
+
+
+# Check for _SOURCE and _DEST overrides passed to the script
+if [ $# -ge 1 ] && [ -d $1 ]; then
+    _SOURCE=$1
+elif [ $# -ge 2 ] && [ -d $2]; then
+    _DEST=$2
+fi
+
+if [[ -z "$_SOURCE" ]] || [ ! -d $_SOURCE ]; then
+    echo "Error: Source directory invalid $_SOURCE"
+    echo "Aborting source processing"
+else
+    convert $_SOURCE
+    clean $_SOURCE
+fi
+
+if [[ -z "$_DEST" ]] || [ ! -d $_DEST ]; then
+    echo "Error: destination directory invalid $_DEST"
+    echo "Aborting sync"
+else
+    rsync -rvc --delete-before $_SOURCE $_DEST
+    clean $_DEST
+fi
