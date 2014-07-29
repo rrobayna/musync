@@ -5,4 +5,4 @@ Bash script to automate converting audio in a specified folder from flac to mp3
 and rsyncing that folder somewhere. I'm using this script to manage syncing parts
 of my music collection to mobile devices.
 
-Requirements: bash, ffmpeg, rsync
+Requirements: ffmpeg, rsync
