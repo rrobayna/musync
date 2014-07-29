@@ -1,17 +1,44 @@
 #!/bin/bash
 #####################################
-# convert .flac to .mp3 recursively
-# clean unused files for sync
+# converts .flac to .mp3 recursively
+# cleans text, jpg and other unused files from the source
 # rsync files to a remote filesystem
 # written by: Rafael L Robayna <rrobayna@gmail.com>
 #
-# @todo add support for converting other formats to mp3
-# @todo add functionality to fix playlists so they are always relative
-# @todo add functionality to check if mp3 tags are set and return a warning
+# Running the script for the first time will generate a .msync config file
+# in your home directory.  Edit this config to set your source and destination
+# directories.
+#
+# Optional Parameters:
+# $1 = _SOURCE
+# $2 = _DEST
+#
+# Executing the script with parameters will bypass parameters set in ~/.msync
+#
+# Todo:
+# - add support for converting other formats to mp3
+# - add functionality to fix playlists so they are always relative
+# - add functionality to check if mp3 tags are set and return a warning
 #
 # Requirements:
-# ffmpeg
+# ffmpeg, rsync
 #####################################
+
+_CONFIG=$HOME/.msync
+
+# Create ~/.msync config if dosen't exist
+if [ ! -f $_CONFIG ]; then
+	touch $_CONFIG
+	echo "_SOURCE=" >> $_CONFIG
+	echo "_DEST=" >> $_CONFIG
+fi
+
+# Includes
+. $_CONFIG
+
+# Check for _SOURCE and _DEST overrides passed to the script
+[ $# -gt 0 ] && [ -d $1 ] && _SOURCE=$1
+[ $# -gt 1 ] && [ -d $2 ] && _DEST=$2
 
 
 ###
@@ -134,34 +161,18 @@ convert() {
 # Check that ffmpeg is installed
 hash ffmpeg 2>/dev/null || { echo >&2 "Error: ffmpeg not found, aborting sync..."; exit 1; }
 
-_CONFIG=$HOME/.msync
-
-# Create ~/.msync config if dosen't exist
-if [ ! -f $_CONFIG ]; then
-    touch $_CONFIG
-    echo "_SOURCE=" >> $_CONFIG
-    echo "_DEST=" >> $_CONFIG
+if [[ -z "$_SOURCE" ]] || [ ! -d "$_SOURCE" ]; then
+	echo "Error: Source directory invalid $_SOURCE"
+	echo "Aborting source processing"
+else
+	convert "$_SOURCE"
+	clean "$_SOURCE"
 fi
 
-# Includes
-. $_CONFIG
-
-# Check for _SOURCE and _DEST overrides passed to the script
-[ $# -gt 0 ] && [ -d $1 ] && _SOURCE=$1
-[ $# -gt 1 ] && [ -d $2 ] && _DEST=$2
-
-if [[ -z "$_SOURCE" ]] || [ ! -d $_SOURCE ]; then
-    echo "Error: Source directory invalid $_SOURCE"
-    echo "Aborting source processing"
+if [[ -z "$_DEST" ]] || [ ! -d "$_DEST" ]; then
+	echo "Error: destination directory invalid $_DEST"
+	echo "Aborting sync"
 else
-    convert $_SOURCE
-    clean $_SOURCE
-fi
-
-if [[ -z "$_DEST" ]] || [ ! -d $_DEST ]; then
-    echo "Error: destination directory invalid $_DEST"
-    echo "Aborting sync"
-else
-    rsync -rvc --delete-before $_SOURCE $_DEST
-    clean $_DEST
+	rsync -rvc --delete-before "$_SOURCE" "$_DEST"
+	clean "$_DEST"
 fi
