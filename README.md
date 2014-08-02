@@ -1,10 +1,8 @@
-musync - Music Sync Tool
+musync - mu(sic)sync helper
 ==
 
 Bash script to automate converting audio in a specified folder from flac to mp3
 and rsyncing that folder to a specified destination.
-
-Requirements: ffmpeg, rsync
 
 ## Usage
 
@@ -21,3 +19,7 @@ home folder and fill in the following information.
 _SOURCE=/your/source/directory/
 _DEST=/your/destination/directory/
 ```
+
+## Requirements
+
+ffmpeg, rsync
