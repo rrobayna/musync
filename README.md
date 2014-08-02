@@ -1,8 +1,7 @@
-musync - mu(sic)sync helper
+musync - mu(sic) sync helper
 ==
 
-Bash script to automate converting audio in a specified folder from flac to mp3
-and rsyncing that folder to a specified destination.
+Bash script to automate music audio conversion and syncronization between sources. It currently only supports flac to mp3 conversion and syncronization between two sources.
 
 ## Usage
 
