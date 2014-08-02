@@ -5,7 +5,7 @@
 # rsync files to a remote filesystem
 # written by: Rafael L Robayna <rrobayna@gmail.com>
 #
-# Running the script for the first time will generate a .msync config file
+# Running the script for the first time will generate a .musync config file
 # in your home directory.  Edit this config to set your source and destination
 # directories.
 #
@@ -13,7 +13,7 @@
 # $1 = _SOURCE
 # $2 = _DEST
 #
-# Executing the script with parameters will bypass parameters set in ~/.msync
+# Executing the script with parameters will bypass parameters set in ~/.musync
 #
 # Todo:
 # - add support for converting other formats to mp3
@@ -24,9 +24,9 @@
 # ffmpeg, rsync
 #####################################
 
-_CONFIG=$HOME/.msync
+_CONFIG=$HOME/.musync
 
-# Create ~/.msync config if dosen't exist
+# Create ~/.musync config if dosen't exist
 if [ ! -f $_CONFIG ]; then
     touch $_CONFIG
     echo "_SOURCE=" >> $_CONFIG
