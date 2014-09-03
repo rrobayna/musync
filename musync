@@ -1,6 +1,6 @@
 #!/bin/bash
 #####################################
-# converts .flac to .mp3 recursively
+# converts .flac and .ape albums to .mp3 recursively
 # cleans text, jpg and other unused files from the source
 # rsync files to a remote filesystem
 # written by: Rafael L Robayna <rrobayna@gmail.com>
@@ -115,12 +115,16 @@ convert() {
 
 	_count=0
 
-	# @alt find -E $_path -type f -iregex '.*\.(flac|wma)$' | while read file; do
-	find "$_path" -type f -iname '*.flac' | while read file; do
+	find -E "$_path" -type f -iregex '.*\.(flac|ape)$' | while read file; do
 
-		_filepath="${file%.[Ff][Ll][Aa][Cc]}"
+		_extention=$(echo "$file" | rev | cut -d'.' -f1 | rev)
+		if [[ "$_extention" == "flac" ]] || [[ "$_extention" == "FLAC" ]]; then
+			_filepath="${file%.[Ff][Ll][Aa][Cc]}"
+		elif [[ "$_extention" == "ape" ]] || [[ "$_extention" == "APE" ]]; then
+			_filepath="${file%.[Aa][Pp][Ee]}"
+		fi
+
 		_newfile="$_filepath.mp3"
-
 		# Don't overwrite exiting mp3
 		[ -f "$_newfile" ] && continue
 
