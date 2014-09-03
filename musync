@@ -44,13 +44,14 @@ fi
 _SOURCE=${_SOURCE%/}
 _DEST=${_DEST%/}
 
+###
 # Clean folder and all subfolders of extra files
 #
 # @param string path
 # @return void
 ###
 clean() {
-	if [[ -z "$1" ]] || [ ! -d "$1" ]; then
+	if [ -z "$1" ] || [ ! -d "$1" ]; then
 		echo "Error: Clean path invalid $1"; exit 1
 	fi
 
@@ -81,13 +82,12 @@ clean() {
 ###
 convert() {
 
-	if [[ -z "$1" ]] || [ ! -d "$1" ]; then
+	if [ -z "$1" ] || [ ! -d "$1" ]; then
 		echo "Error: Convert path invalid $1"; exit 1
 	fi
 
 	echo "######################################"
 	echo "# Scanning path to convert audio"
-	echo "# "
 
 	###
 	# Root directory path
@@ -100,7 +100,7 @@ convert() {
 	# @param string
 	###
 	_bitrate=320k
-	if [[ $# -ge 2 ]]; then
+	if [ $# -ge 2 ]; then
 		_bitrate="$2"
 	fi
 
@@ -109,7 +109,7 @@ convert() {
 	# @param boolean
 	###
 	_delete_origional=true
-	if [[ $# -ge 3 ]]; then
+	if [ $# -ge 3 ]; then
 		_delete_origional="$3"
 	fi
 
@@ -137,7 +137,7 @@ convert() {
 		_oldfile_size=$(du -k "$file" | cut -f 1)
 		_expected_size=$(( $_oldfile_size / 10 ))
 		_file_size=$(du -k "$_newfile" | cut -f 1)
-		if [[ -z "$_file_size" ]]; then _file_size=1; fi
+		if [ -z "$_file_size" ]; then _file_size=1; fi
 		if [ $_file_size -gt $_expected_size ]; then
 			rm "$file"
 			_count=$(($_count + 1))
@@ -157,7 +157,7 @@ convert() {
 # Check that ffmpeg is installed
 hash ffmpeg 2>/dev/null || { echo >&2 "Error: ffmpeg not found, aborting sync..."; exit 1; }
 
-if [[ -z "$_SOURCE" ]] || [ ! -d "$_SOURCE" ]; then
+if [ -z "$_SOURCE" ] || [ ! -d "$_SOURCE" ]; then
     echo "Error: Source directory invalid $_SOURCE"
     echo "Aborting source processing"
 else
@@ -165,10 +165,10 @@ else
     clean "$_SOURCE"
 fi
 
-if [[ -z "$_DEST" ]] || [ ! -d "$_DEST" ]; then
+if [ -z "$_DEST" ] || [ ! -d "$_DEST" ]; then
     echo "Error: destination directory invalid $_DEST"
     echo "Aborting sync"
 else
-    rsync -rvc --delete-before "$_SOURCE" "$_DEST"
+    rsync -rvc --delete-before --exclude=".DS_Store" "$_SOURCE"/ "$_DEST"/
     clean "$_DEST"
 fi
