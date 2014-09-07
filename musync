@@ -178,6 +178,6 @@ elif [ ! -d "$_DEST" ]; then
     echo "Error: destination directory invalid $_DEST"
     echo "Aborting sync"
 else
-    rsync -rvc --delete-before --exclude=".DS_Store" "$_SOURCE"/ "$_DEST"/
+    rsync -rv --size-only --delete-before --exclude=".DS_Store" "$_SOURCE/" "$_DEST/"
     clean "$_DEST"
 fi
