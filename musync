@@ -65,11 +65,11 @@ clean() {
 	find "$1" -name ".webviews" -print0 | xargs -0 rm -f
 	find -E "$_path" -type f -iregex '.*\.(jpg|jpeg|png|gif)$' -print0 | xargs -0 rm -f
 	find -E "$_path" -type f -iregex '.*\.(txt|nfo|log|doc|pdf)$' -print0 | xargs -0 rm -f
+	find "$1" -iname *.url -print0 | xargs -0 rm -f
 	find "$1" -iname *.sfv -print0 | xargs -0 rm -f
+	find "$1" -iname *.zip -print0 | xargs -0 rm -f
 	find "$1" -iname *.cue -print0 | xargs -0 rm -f
 	find "$1" -iname *.md5 -print0 | xargs -0 rm -f
-	find "$1" -iname *.url -print0 | xargs -0 rm -f
-	find "$1" -iname *.zip -print0 | xargs -0 rm -f
 	find "$1" -iname ._* -print0 | xargs -0 rm -f
 	find "$1" -type d -empty -exec echo Removing empty directory {} \; -exec rmdir {} \; 2> /dev/null
 	echo "######################################"
@@ -84,7 +84,6 @@ clean() {
 # @return void
 ###
 convert() {
-
 	if [ -z "$1" ] || [ ! -d "$1" ]; then
 		echo "Error: Convert path invalid $1"; exit 1
 	fi
@@ -160,6 +159,7 @@ convert() {
 	echo ""
 
 }
+
 
 # Check that ffmpeg is installed
 hash ffmpeg 2>/dev/null || { echo >&2 "Error: ffmpeg not found, aborting sync..."; exit 1; }
